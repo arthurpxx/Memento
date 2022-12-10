@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <--!eu quero que tu implemente um código funcional de um bloco de texto, onde o usuário digita as informações e ele
+        vai registrando, mas pode clicar em uma opção para desfazer usando o memento. -->
+
+        <div>
+            <input type="text">
+            <button onclick="salvar()">SALVAR</button>
+            <button onclick="voltar()">DESFAZER</button>
+
+            <ul id="list"></ul>
+        </div>
+
+        <script>
+            class Memento {
+                constructor(text) {
+                    this.text = text;
+                }
+
+                save(text) {
+                    this.text = text;
+                }
+
+                restoreMemento() {
+                    return this.text;
+                }
+            }
+
+            class Originator {
+                constructor() {
+                    this.text = "";
+                }
+
+                createMemento() {
+                    return {
+                        text: this.text
+                    }
+                }
+
+                setMemento(memento) {
+                    this.text = memento.text;
+                }
+            }
+
+            class Caretaker {
+                constructor() {
+                    this.mementos = [];
+                }
+
+                addMemento(memento) {
+                    this.mementos.push(memento);
+                }
+
+                getMemento(index) {
+                    return this.mementos[index];
+                }
+            }
+
+            const originator = new Originator();
+            const caretaker = new Caretaker();
+
+            function salvar() {
+                const text = document.querySelector("input").value;
+                originator.text = text;
+                caretaker.addMemento(originator.createMemento());
+                document.querySelector("input").value = "";
+                const li = document.createElement("li");
+
+                li.innerHTML = text;
+                document.querySelector('#list').appendChild(li);
+            }
+
+            function voltar() {
+                const memento = caretaker.getMemento(caretaker.mementos.length - 1);
+                originator.setMemento(memento);
+                caretaker.mementos.pop();
+                document.querySelector('#list').lastChild.remove();
+            }
+        </script>
+</body>
+
+</html>
